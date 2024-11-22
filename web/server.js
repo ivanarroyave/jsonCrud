@@ -1,109 +1,107 @@
 const express = require("express");
 const fs = require("fs");
-const path = require("path");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-
 const app = express();
 const PORT = 3000;
 
-// Ruta del archivo JSON
-const JSON_FILE = path.join(__dirname, "persons.json");
-
 // Middleware
-app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.static("public"));
 
-// Servir archivos estáticos (frontend)
-app.use(express.static(path.join(__dirname, "public")));
+// Archivos JSON
+const personsFile = "./persons.json";
+const environmentsFile = "./environments.json";
 
-// Rutas para la API
+// --- Rutas para personas ---
 app.get("/api/persons", (req, res) => {
-    fs.readFile(JSON_FILE, "utf8", (err, data) => {
+    fs.readFile(personsFile, "utf8", (err, data) => {
         if (err) {
-            console.error("Error reading file:", err);
-            return res.status(500).json({ error: "Failed to read data" });
+            console.error("Error reading persons file:", err);
+            return res.status(500).json({ error: "Failed to load persons" });
         }
         res.json(JSON.parse(data));
     });
 });
 
-app.post("/api/persons", (req, res) => {
-    const newPerson = req.body;
-
-    fs.readFile(JSON_FILE, "utf8", (err, data) => {
+// --- Rutas para ambientes ---
+app.get("/api/environments", (req, res) => {
+    fs.readFile(environmentsFile, "utf8", (err, data) => {
         if (err) {
-            console.error("Error reading file:", err);
-            return res.status(500).json({ error: "Failed to read data" });
+            console.error("Error reading environments file:", err);
+            return res.status(500).json({ error: "Failed to load environments" });
         }
+        res.json(JSON.parse(data));
+    });
+});
 
-        const persons = JSON.parse(data);
-        persons.unshift(newPerson); // Agregar nueva persona al inicio del array
+app.post("/api/environments", (req, res) => {
+    const newRegion = req.body;
 
-        fs.writeFile(JSON_FILE, JSON.stringify(persons, null, 2), "utf8", (err) => {
-            if (err) {
-                console.error("Error writing file:", err);
-                return res.status(500).json({ error: "Failed to write data" });
-            }
-            res.json({ message: "Person added successfully" });
+    fs.readFile(environmentsFile, "utf8", (err, data) => {
+        if (err) return res.status(500).json({ error: "Failed to read environments file" });
+
+        const environments = JSON.parse(data);
+        environments.push(newRegion);
+
+        fs.writeFile(environmentsFile, JSON.stringify(environments, null, 2), "utf8", (err) => {
+            if (err) return res.status(500).json({ error: "Failed to save environment" });
+            res.json({ message: "Region added successfully!" });
         });
     });
 });
 
-app.put("/api/persons/:index", (req, res) => {
+app.put("/api/environments/:index", (req, res) => {
     const index = parseInt(req.params.index);
-    const updatedPerson = req.body;
+    const updatedRegion = req.body;
 
-    fs.readFile(JSON_FILE, "utf8", (err, data) => {
-        if (err) {
-            console.error("Error reading file:", err);
-            return res.status(500).json({ error: "Failed to read data" });
-        }
+    fs.readFile(environmentsFile, "utf8", (err, data) => {
+        if (err) return res.status(500).json({ error: "Failed to read environments file" });
 
-        const persons = JSON.parse(data);
-        if (index < 0 || index >= persons.length) {
-            return res.status(404).json({ error: "Person not found" });
-        }
+        const environments = JSON.parse(data);
+        environments[index] = updatedRegion;
 
-        persons[index] = updatedPerson;
-
-        fs.writeFile(JSON_FILE, JSON.stringify(persons, null, 2), "utf8", (err) => {
-            if (err) {
-                console.error("Error writing file:", err);
-                return res.status(500).json({ error: "Failed to write data" });
-            }
-            res.json({ message: "Person updated successfully" });
+        fs.writeFile(environmentsFile, JSON.stringify(environments, null, 2), "utf8", (err) => {
+            if (err) return res.status(500).json({ error: "Failed to save environment" });
+            res.json({ message: "Region updated successfully!" });
         });
     });
 });
 
-app.delete("/api/persons/:index", (req, res) => {
+app.delete("/api/environments/:index", (req, res) => {
     const index = parseInt(req.params.index);
 
-    fs.readFile(JSON_FILE, "utf8", (err, data) => {
-        if (err) {
-            console.error("Error reading file:", err);
-            return res.status(500).json({ error: "Failed to read data" });
-        }
+    fs.readFile(environmentsFile, "utf8", (err, data) => {
+        if (err) return res.status(500).json({ error: "Failed to read environments file" });
 
-        const persons = JSON.parse(data);
-        if (index < 0 || index >= persons.length) {
-            return res.status(404).json({ error: "Person not found" });
-        }
+        const environments = JSON.parse(data);
+        environments.splice(index, 1);
 
-        persons.splice(index, 1);
-
-        fs.writeFile(JSON_FILE, JSON.stringify(persons, null, 2), "utf8", (err) => {
-            if (err) {
-                console.error("Error writing file:", err);
-                return res.status(500).json({ error: "Failed to write data" });
-            }
-            res.json({ message: "Person deleted successfully" });
+        fs.writeFile(environmentsFile, JSON.stringify(environments, null, 2), "utf8", (err) => {
+            if (err) return res.status(500).json({ error: "Failed to save environments" });
+            res.json({ message: "Region deleted successfully!" });
         });
     });
 });
 
-// Iniciar el servidor
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Inicia el servidor
+app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));

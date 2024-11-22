@@ -1,0 +1,64 @@
+[
+  {
+    "name": "USA",
+    "urls": [
+      {
+        "name": "SomeNameQa",
+        "environment": "QA",
+        "url": "https://www.google.com",
+        "certificate": {
+          "host": "https://www.google.com",
+          "port": "443",
+          "crtFile": "somePath",
+          "keyFile": "somePath",
+          "pfxFile": "somePath",
+          "passphrase": "somePass"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Asia",
+    "urls": [
+      {
+        "name": "qa-facebook",
+        "environment": "QA",
+        "url": "www.qa-facebook.com",
+        "certificate": {
+          "host": null,
+          "port": null,
+          "crtFile": null,
+          "keyFile": null,
+          "pfxFile": null,
+          "passphrase": null
+        }
+      },
+      {
+        "name": "sbx-facebook",
+        "environment": "SBX",
+        "url": "www.sbx-facebook.com",
+        "certificate": {
+          "host": null,
+          "port": null,
+          "crtFile": null,
+          "keyFile": null,
+          "pfxFile": null,
+          "passphrase": null
+        }
+      },
+      {
+        "name": "stg-facebook",
+        "environment": "STG",
+        "url": "www.stg-facebook.com",
+        "certificate": {
+          "host": null,
+          "port": null,
+          "crtFile": null,
+          "keyFile": null,
+          "pfxFile": null,
+          "passphrase": null
+        }
+      }
+    ]
+  }
+]

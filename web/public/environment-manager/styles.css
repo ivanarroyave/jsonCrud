@@ -1,0 +1,13 @@
+.placeholder::before {
+    content: attr(data-placeholder);
+    color: #6c757d;
+    font-style: italic;
+}
+
+.placeholder:empty::before {
+    display: inline;
+}
+
+.placeholder:focus::before {
+    display: none;
+}
